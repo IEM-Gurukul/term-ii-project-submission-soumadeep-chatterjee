@@ -37,4 +37,63 @@ public class AttendanceService {
         dao.saveAttendance(record);
         System.out.println("Attendance marked successfully!");
     }
+
+    public void calculatePercentage(String studentId) throws StudentNotFoundException {
+        List<Student> students = dao.getAllStudents();
+        boolean studentExists = false;
+        
+        for (Student student : students) {
+            if (student.getId().equals(studentId)) {
+                studentExists = true;
+                break;
+            }
+        }
+
+        if (!studentExists) {
+            throw new StudentNotFoundException("Student with ID " + studentId + " not found.");
+        }
+
+        List<AttendanceRecord> records = dao.getAllAttendance();
+        int totalClasses = 0;
+        int presentClasses = 0;
+        
+        for (AttendanceRecord record : records) {
+            if (record.getStudentId().equals(studentId)) {
+                totalClasses++;
+                if (record.getStatus().equalsIgnoreCase("Present") || record.getStatus().equalsIgnoreCase("P")) {
+                    presentClasses++;
+                }
+            }
+        }
+        
+        if (totalClasses == 0) {
+            System.out.println("No attendance records found for student ID " + studentId);
+        } else {
+            double percentage = ((double) presentClasses / totalClasses) * 100;
+            System.out.printf("Attendance Percentage for Student ID %s: %.2f%%\n", studentId, percentage);
+        }
+    }
+
+    public void searchStudent(String studentId) {
+        List<Student> students = dao.getAllStudents();
+        for (Student student : students) {
+            if (student.getId().equals(studentId)) {
+                System.out.println("Student Found: " + student);
+                return;
+            }
+        }
+        System.out.println("Student with ID " + studentId + " not found.");
+    }
+
+    public void showStudents() {
+        List<Student> students = dao.getAllStudents();
+        if (students.isEmpty()) {
+            System.out.println("No students found.");
+        } else {
+            System.out.println("List of Students:");
+            for (Student student : students) {
+                System.out.println(student);
+            }
+        }
+    }
 }
