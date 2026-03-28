@@ -12,7 +12,9 @@ public class Main {
         System.out.println("--- Student Attendance Management System ---");
 
         while (running) {
-            System.out.println("\nMain Menu:");
+            System.out.println("\n======================================");
+            System.out.println("             MAIN MENU                ");
+            System.out.println("======================================");
             System.out.println("1. Add Student");
             System.out.println("2. Mark Attendance");
             System.out.println("3. Show All Students");
@@ -32,19 +34,37 @@ public class Main {
 
             switch (choice) {
                 case 1:
+                    System.out.println("\n--- Add Student ---");
                     System.out.print("Enter Student ID: ");
-                    String id = scanner.nextLine();
+                    String id = scanner.nextLine().trim();
                     System.out.print("Enter Student Name: ");
-                    String name = scanner.nextLine();
+                    String name = scanner.nextLine().trim();
+                    if (id.isEmpty() || name.isEmpty()) {
+                        System.out.println("Error: Student ID and Name cannot be empty.");
+                        break;
+                    }
                     service.addStudent(new Student(id, name));
                     break;
                 case 2:
+                    System.out.println("\n--- Mark Attendance ---");
                     System.out.print("Enter Student ID: ");
-                    String studentId = scanner.nextLine();
+                    String studentId = scanner.nextLine().trim();
                     System.out.print("Enter Date (YYYY-MM-DD): ");
-                    String date = scanner.nextLine();
-                    System.out.print("Enter Status (Present/Absent/Late): ");
-                    String status = scanner.nextLine();
+                    String date = scanner.nextLine().trim();
+                    System.out.print("Enter Status (P/A/L or Present/Absent/Late): ");
+                    String status = scanner.nextLine().trim();
+                    
+                    if (studentId.isEmpty() || date.isEmpty() || status.isEmpty()) {
+                        System.out.println("Error: All fields are required.");
+                        break;
+                    }
+                    
+                    if (!status.equalsIgnoreCase("P") && !status.equalsIgnoreCase("A") && !status.equalsIgnoreCase("L") && 
+                        !status.equalsIgnoreCase("Present") && !status.equalsIgnoreCase("Absent") && !status.equalsIgnoreCase("Late")) {
+                        System.out.println("Error: Invalid status. Please enter P/A/L or Present/Absent/Late.");
+                        break;
+                    }
+
                     try {
                         service.markAttendance(studentId, date, status);
                     } catch (StudentNotFoundException e) {
@@ -52,16 +72,27 @@ public class Main {
                     }
                     break;
                 case 3:
+                    System.out.println("\n--- All Students ---");
                     service.showStudents();
                     break;
                 case 4:
+                    System.out.println("\n--- Search Student ---");
                     System.out.print("Enter Student ID: ");
-                    String searchId = scanner.nextLine();
+                    String searchId = scanner.nextLine().trim();
+                    if (searchId.isEmpty()) {
+                        System.out.println("Error: Student ID cannot be empty.");
+                        break;
+                    }
                     service.searchStudent(searchId);
                     break;
                 case 5:
+                    System.out.println("\n--- Calculate Percentage ---");
                     System.out.print("Enter Student ID: ");
-                    String calcId = scanner.nextLine();
+                    String calcId = scanner.nextLine().trim();
+                    if (calcId.isEmpty()) {
+                        System.out.println("Error: Student ID cannot be empty.");
+                        break;
+                    }
                     try {
                         service.calculatePercentage(calcId);
                     } catch (StudentNotFoundException e) {
@@ -70,10 +101,15 @@ public class Main {
                     break;
                 case 6:
                     running = false;
-                    System.out.println("Exiting the system. Goodbye!");
+                    System.out.println("\nExiting the system. Goodbye!");
                     break;
                 default:
-                    System.out.println("Invalid option. Please select a number from 1 to 6.");
+                    System.out.println("Error: Invalid option. Please select a number from 1 to 6.");
+            }
+            
+            if (running) {
+                System.out.println("\nPress Enter to continue...");
+                scanner.nextLine();
             }
         }
         scanner.close();

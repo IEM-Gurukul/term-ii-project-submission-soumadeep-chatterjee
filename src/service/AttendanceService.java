@@ -71,6 +71,9 @@ public class AttendanceService {
         } else {
             double percentage = ((double) presentClasses / totalClasses) * 100;
             System.out.printf("Attendance Percentage for Student ID %s: %.2f%%\n", studentId, percentage);
+            if (percentage < 75.0) {
+                System.out.println("[WARNING] Low attendance! Minimum required is 75%.");
+            }
         }
     }
 
